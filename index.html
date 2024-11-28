@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo de Fibra Óptica en el Campus</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-ajax/dist/leaflet.ajax.min.js"></script>
+
+    <script>
+        // Crear el mapa
+        var map = L.map('map').setView([-31.413, -64.181], 15); // Coordenadas del centro del mapa (ajusta según tu ubicación)
+
+        // Capa base
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Cargar y mostrar los nodos con un icono personalizado
+        var nodos = L.geoJSON.ajax('https://raw.githubusercontent.com/usuario/repo/main/nodos.geojson', {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, { 
+                    icon: L.icon({
+                        iconUrl: 'nodo-icon.png',  // Aquí puedes cambiar a tu icono personalizado
+                        iconSize: [25, 25], // Tamaño del ícono
+                        iconAnchor: [12, 12], // Punto de anclaje del ícono
+                        popupAnchor: [0, -15] // Ubicación del popup
+                    })
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<strong>Nodo:</strong> ' + feature.properties.nombre);
+            }
+        }).addTo(map);
+
+        // Cargar y mostrar las cámaras (usando un ícono diferente si lo deseas)
+        var camaras = L.geoJSON.ajax('https://raw.githubusercontent.com/usuario/repo/main/camaras.geojson', {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, { 
+                    icon: L.icon({
+                        iconUrl: 'camara-icon.png',  // Icono para las cámaras
+                        iconSize: [25, 25], 
+                        iconAnchor: [12, 12],
+                        popupAnchor: [0, -15]
+                    })
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<strong>Cámara:</strong> ' + feature.properties.nombre);
+            }
+        }).addTo(map);
+
+        // Cargar y mostrar la fibra_fibra (líneas)
+        var fibraFibra = L.geoJSON.ajax('https://raw.githubusercontent.com/usuario/repo/main/fibra_fibra.geojson', {
+            style: function (feature) {
+                return { color: 'blue', weight: 3 }; // Línea de color azul con grosor de 3
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<strong>Fibra (Fibra Óptica):</strong> ' + feature.properties.nombre);
+            }
+        }).addTo(map);
+
+        // Cargar y mostrar la fibra_tubo (líneas)
+        var fibraTubo = L.geoJSON.ajax('https://raw.githubusercontent.com/usuario/repo/main/fibra_tubo.geojson', {
+            style: function (feature) {
+                return { color: 'green', weight: 3 }; // Línea de color verde con grosor de 3
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<strong>Fibra (Tubo):</strong> ' + feature.properties.nombre);
+            }
+        }).addTo(map);
+
+        // Control de capas para mostrar u ocultar las capas según lo que el usuario seleccione
+        var baseLayers = {
+            "Mapa Base": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        };
+
+        var overlayLayers = {
+            "Nodos": nodos,
+            "Cámaras": camaras,
+            "Fibra Óptica (Fibra)": fibraFibra,
+            "Fibra Óptica (Tubo)": fibraTubo
+        };
+
+        L.control.layers(baseLayers, overlayLayers).addTo(map);
+    </script>
+
+</body>
+</html>
