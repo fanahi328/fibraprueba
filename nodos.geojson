@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "nodos",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "Nodos": null, "ubicacion": null }, "geometry": { "type": "Point", "coordinates": [ -64.190220904344528, -31.4347839747658 ] } },
+{ "type": "Feature", "properties": { "id": 2, "Nodos": null, "ubicacion": null }, "geometry": { "type": "Point", "coordinates": [ -64.18760316409481, -31.437231412518511 ] } },
+{ "type": "Feature", "properties": { "id": 3, "Nodos": null, "ubicacion": null }, "geometry": { "type": "Point", "coordinates": [ -64.184061239243817, -31.440026818097159 ] } }
+]
+}
